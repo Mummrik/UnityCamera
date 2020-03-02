@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Assertions;
+﻿using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
@@ -18,7 +15,7 @@ public class InputManager : MonoBehaviour
 
         if (Camera.main.GetComponent<CameraController>() == null)
         {
-            Debug.LogWarning("Main camera was missing a CameraController, please add one to get rid of this warning!");
+            Debug.LogWarning("Main camera was missing a CameraController script, please add one to get rid of this warning! (InputMannager added one automatically)");
             cameraController = Camera.main.gameObject.AddComponent<CameraController>();
             cameraController.target = playerTransform;
         }
@@ -34,6 +31,11 @@ public class InputManager : MonoBehaviour
     //Register input
     private void Update()
     {
+        if (cameraController.isNotInLineOfSight)
+        {
+            cameraController.UpdateCamera();
+        }
+
         if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
         {
             isMoving = true;
@@ -58,13 +60,13 @@ public class InputManager : MonoBehaviour
         {
             Movement();
         }
-
     }
 
     private void Movement()
     {
         playerTransform.position += (Vector3.forward * Input.GetAxis("Vertical") * Time.deltaTime * moveSpeed) + (Vector3.right * Input.GetAxis("Horizontal") * Time.deltaTime * moveSpeed);
         cameraController.transform.position += (Vector3.forward * Input.GetAxis("Vertical") * Time.deltaTime * moveSpeed) + (Vector3.right * Input.GetAxis("Horizontal") * Time.deltaTime * moveSpeed);
+        cameraController.UpdateCamera();
         isMoving = false;
     }
 }
