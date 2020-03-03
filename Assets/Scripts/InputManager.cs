@@ -31,11 +31,6 @@ public class InputManager : MonoBehaviour
     //Register input
     private void Update()
     {
-        if (cameraController.isNotInLineOfSight)
-        {
-            cameraController.UpdateCamera();
-        }
-
         if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
         {
             isMoving = true;
@@ -51,6 +46,10 @@ public class InputManager : MonoBehaviour
             cameraController.Rotate(Input.GetAxis("Mouse X"));
             cameraController.Pitch(Input.GetAxis("Mouse Y"));
         }
+        if (Input.GetAxis("RotateWhitKey") != 0)
+        {
+            cameraController.Rotate(Input.GetAxis("RotateWhitKey"));
+        }
     }
 
     //Apply input to physics
@@ -64,9 +63,9 @@ public class InputManager : MonoBehaviour
 
     private void Movement()
     {
-        playerTransform.position += (Vector3.forward * Input.GetAxis("Vertical") * Time.deltaTime * moveSpeed) + (Vector3.right * Input.GetAxis("Horizontal") * Time.deltaTime * moveSpeed);
-        cameraController.transform.position += (Vector3.forward * Input.GetAxis("Vertical") * Time.deltaTime * moveSpeed) + (Vector3.right * Input.GetAxis("Horizontal") * Time.deltaTime * moveSpeed);
-        cameraController.UpdateCamera();
+        Vector3 movement = (Vector3.forward * Input.GetAxis("Vertical") * Time.deltaTime * moveSpeed) + (Vector3.right * Input.GetAxis("Horizontal") * Time.deltaTime * moveSpeed);
+        playerTransform.position += movement;
+        cameraController.Move(movement);
         isMoving = false;
     }
 }
