@@ -8,7 +8,7 @@ public class InputManager : MonoBehaviour
     private float moveSpeed = 3.0f;
     private bool isMoving;
 
-
+    private bool IsMouseOverGameWindow { get { return !(0 > Input.mousePosition.x || 0 > Input.mousePosition.y || Screen.width < Input.mousePosition.x || Screen.height < Input.mousePosition.y); } }
     private void Awake()
     {
         playerTransform = GameManager.instance.player.transform;
@@ -36,16 +36,30 @@ public class InputManager : MonoBehaviour
             isMoving = true;
         }
 
-        if (Input.GetAxis("Mouse ScrollWheel") != 0)
+        if (Input.mouseScrollDelta.y != 0 && IsMouseOverGameWindow)
         {
-            cameraController.Zoom(Input.GetAxis("Mouse ScrollWheel") * 5.0f);
+            cameraController.Zoom(Input.mouseScrollDelta.y);
         }
 
         if (Input.GetButton("Fire2"))
         {
+            Cursor.visible = false;
+
             cameraController.Rotate(Input.GetAxis("Mouse X"));
             cameraController.Pitch(Input.GetAxis("Mouse Y"));
+           
+            if (Input.GetButton("Fire1"))
+            {
+                //TODO: Fix the player rotation
+                playerTransform.rotation = new Quaternion(playerTransform.rotation.x, cameraController.transform.rotation.y, playerTransform.rotation.z, playerTransform.rotation.w);
+                Movement(1.0f, 0.0f);
+            }
         }
+        else
+        {
+            Cursor.visible = true;
+        }
+
         if (Input.GetAxis("RotateWhitKey") != 0)
         {
             cameraController.Rotate(Input.GetAxis("RotateWhitKey"));
@@ -57,15 +71,16 @@ public class InputManager : MonoBehaviour
     {
         if (isMoving)
         {
-            Movement();
+            Movement(Input.GetAxis("Vertical"), Input.GetAxis("Horizontal"));
         }
     }
 
-    private void Movement()
+    private void Movement(float x, float y)
     {
-        Vector3 movement = (Vector3.forward * Input.GetAxis("Vertical") * Time.deltaTime * moveSpeed) + (Vector3.right * Input.GetAxis("Horizontal") * Time.deltaTime * moveSpeed);
+        Vector3 movement = (playerTransform.forward * x * Time.deltaTime * moveSpeed) + (playerTransform.right * y * Time.deltaTime * moveSpeed);
         playerTransform.position += movement;
         cameraController.Move(movement);
         isMoving = false;
     }
+
 }
