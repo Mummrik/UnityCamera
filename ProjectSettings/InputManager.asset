@@ -297,8 +297,8 @@ InputManager:
     m_Name: RotateWhitKey
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: e
-    positiveButton: q
+    negativeButton: q
+    positiveButton: e
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000
