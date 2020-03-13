@@ -56,9 +56,8 @@ public class InputManager : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
 
-            cameraController.Pitch(Input.GetAxisRaw(mouseVertical));
+            cameraController.Pitch(Input.GetAxis(mouseVertical));
             cameraController.Rotate(Input.GetAxis(mouseHorizontal));
-            //cameraController.RotateNew(Input.GetAxis(mouseVertical), Input.GetAxis(mouseHorizontal));
 
             if (Input.GetButton(mouse1))
             {
@@ -79,15 +78,11 @@ public class InputManager : MonoBehaviour
         {
             cameraController.Rotate(Input.GetAxis(rotateWhitKeys));
         }
-    }
 
-    //Apply input to physics
-    private void FixedUpdate()
-    {
         if (isMoving)
         {
             // if rotate movement is active then only strafe movement will be allowed
-            Movement(isRotating ? 1f : Input.GetAxis(moveVertical), Input.GetAxis(moveHorizontal));
+            Movement(isRotating ? 0f : Input.GetAxis(moveVertical), Input.GetAxis(moveHorizontal));
         }
         if (isRotating)
         {
